@@ -2,11 +2,11 @@ name: git diff
 description: Generates file change log between 2 git refs
 inputs:
   ref: 
-    description: 'Ref'
+    description: git ref to use as head
     required: false
     default: HEAD
   base_ref:
-    description: 'Base ref'
+    description: git ref to use as base
     required: false
     default: HEAD~1
   status:
