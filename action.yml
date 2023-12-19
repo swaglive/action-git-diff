@@ -16,7 +16,7 @@ inputs:
   filename-pattern:
     description: Filename pattern to filter by
     required: false
-    default: "'*'"
+    default: '*'
 outputs:
   filenames:
     description: A JSON array of filenames that changed
