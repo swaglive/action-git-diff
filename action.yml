@@ -1,0 +1,33 @@
+name: git diff
+description: Generates a git diff
+inputs:
+  ref: 
+    description: 'Ref'
+    required: false
+    default: HEAD
+  base_ref:
+    description: 'Base ref'
+    required: false
+    default: HEAD~1
+  status:
+    description: Change status of the files to filter by. See https://git-scm.com/docs/git-status#_output
+    required: false
+    default: AM
+  filename-pattern:
+    description: Filename pattern to filter by
+    required: false
+    default: "'*'"
+outputs:
+  filenames:
+    description: A JSON array of filenames that changed
+    value: ${{ steps.diff.outputs.filenames }}
+runs:
+  using: composite
+  steps:
+  - shell: bash
+    id: diff
+    run: |-
+      filenames=$(
+        git diff --name-only --diff-filter=${{ inputs.status }} ${{ inputs.base_ref }}...${{ inputs.ref }} -- ${{ inputs.filename-pattern }} | jq -c --raw-input --slurp 'split("\n") | map(select(. != ""))'
+      )
+      echo "filenames=${filenames}" >> $GITHUB_OUTPUT
