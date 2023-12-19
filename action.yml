@@ -1,5 +1,5 @@
 name: git diff
-description: Generates a git diff
+description: Generates file change log between 2 git refs
 inputs:
   ref: 
     description: 'Ref'
