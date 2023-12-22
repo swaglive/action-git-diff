@@ -44,6 +44,6 @@ runs:
           --diff-filter=${{ inputs.status }} \
           ${{ inputs.base_ref }}...${{ inputs.ref }} -- ${patterns}
       )
-      filenames=$(jq -c --raw-input --slurp 'split("\n") | map(select(. != ""))' <<< '${filenames}')
+      filenames=$(jq -c --raw-input --slurp 'split("\n") | map(select(. != ""))' <<< ${filenames})
  
       echo "filenames=${filenames}" >> $GITHUB_OUTPUT
