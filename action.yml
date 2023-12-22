@@ -27,7 +27,23 @@ runs:
   - shell: bash
     id: diff
     run: |-
-      filenames=$(
-        git diff --name-only --diff-filter=${{ inputs.status }} ${{ inputs.base_ref }}...${{ inputs.ref }} -- ${{ inputs.filename-pattern }} | jq -c --raw-input --slurp 'split("\n") | map(select(. != ""))'
+      refs=(
+        ${{ inputs.ref }}
+        ${{ inputs.base_ref }}
+        ${{ github.ref }}
       )
+      for ref in "${refs[@]}"
+      do
+        git fetch origin ${ref} && git branch ${ref} || true
+      done
+
+      patterns=$(xargs echo <<< '${{ inputs.filename-pattern }}')
+      filenames=$(
+        git diff \
+          --name-only \
+          --diff-filter=${{ inputs.status }} \
+          ${{ inputs.base_ref }}...${{ inputs.ref }} -- ${patterns}
+      )
+      filenames=$(jq -c --raw-input --slurp 'split("\n") | map(select(. != ""))' <<< '${filenames}')
+ 
       echo "filenames=${filenames}" >> $GITHUB_OUTPUT
