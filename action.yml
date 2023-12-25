@@ -5,7 +5,7 @@ inputs:
     description: git ref to use as head
     required: false
     default: HEAD
-  base_ref:
+  base-ref:
     description: git ref to use as base
     required: false
     default: HEAD~1
@@ -20,30 +20,54 @@ inputs:
 outputs:
   filenames:
     description: A JSON array of filenames that changed
-    value: ${{ steps.diff.outputs.filenames }}
+    value: ${{ toJSON(fromJSON(steps.diff.outputs.result).changedFilenames) }}
 runs:
   using: composite
   steps:
-  - shell: bash
+  - uses: actions/github-script@v7
     id: diff
-    run: |-
-      refs=(
-        ${{ inputs.ref }}
-        ${{ inputs.base_ref }}
-        ${{ github.ref }}
-      )
-      for ref in "${refs[@]}"
-      do
-        git fetch origin ${ref} && git branch ${ref} || true
-      done
+    env:
+      INPUT_FILENAME_PATTERN: ${{ inputs.filename-pattern }}
+      INPUT_REF: ${{ inputs.ref }}
+      INPUT_BASE_REF: ${{ inputs.base-ref }}
+      INPUT_STATUS: ${{ inputs.status }}
+    with:
+      script: |-
+        let {
+          INPUT_REF: ref,
+          INPUT_BASE_REF: baseRef,
+          INPUT_STATUS: diffFilter,
+          INPUT_FILENAME_PATTERN: filenamePatterns,
+          GITHUB_REF: headRef,
+        } = process.env
 
-      patterns=$(xargs echo <<< '${{ inputs.filename-pattern }}')
-      filenames=$(
-        git diff \
-          --name-only \
-          --diff-filter=${{ inputs.status }} \
-          ${{ inputs.base_ref }}...${{ inputs.ref }} -- ${patterns}
-      )
-      filenames=$(jq -c --raw-input --slurp 'split("\n") | map(select(. != ""))' <<< ${filenames})
- 
-      echo "filenames=${filenames}" >> $GITHUB_OUTPUT
+        filenamePatterns = filenamePatterns
+          .split('\n')
+          .map(pattern => pattern.trim())
+
+        // Attempt fetch and branch creation for each ref
+        await Promise.allSettled(
+          [ ref, baseRef, headRef ]
+            .map(ref => ref.split(/[~|\^|@]/)[0])
+            .filter(Boolean)
+            .map(async ref => {
+              await exec.getExecOutput('git', ['fetch', 'origin', ref])
+              await exec.getExecOutput('git', ['branch', ref, `remotes/origin/${ref}`])
+            })
+        )
+
+        let { stdout: changedFilenames } = await exec.getExecOutput(
+          'git', 
+          [
+            'diff', 
+            '--name-only',
+            '--diff-filter', diffFilter, 
+            `${baseRef}...${ref}`, 
+            '--', 
+            ...filenamePatterns,
+          ]
+        )
+
+        return { 
+          changedFilenames: changedFilenames.split('\n').filter(Boolean),
+        }
