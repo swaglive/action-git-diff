@@ -12,7 +12,7 @@ inputs:
   status:
     description: Change status of the files to filter by. See https://git-scm.com/docs/git-status#_output
     required: false
-    default: AM
+    default: d
   filename-pattern:
     description: Filename pattern to filter by
     required: false
