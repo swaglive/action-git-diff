@@ -27,23 +27,20 @@ runs:
   - uses: actions/github-script@v7
     id: diff
     env:
-      INPUT_FILENAME_PATTERN: ${{ inputs.filename-pattern }}
+      INPUT_FILENAME-PATTERN: ${{ inputs.filename-pattern }}
       INPUT_REF: ${{ inputs.ref }}
-      INPUT_BASE_REF: ${{ inputs.base-ref }}
+      INPUT_BASE-REF: ${{ inputs.base-ref }}
+      INPUT_HEAD-REF: ${{ github.head_ref }}
       INPUT_STATUS: ${{ inputs.status }}
     with:
       script: |-
-        let {
-          INPUT_REF: ref,
-          INPUT_BASE_REF: baseRef,
-          INPUT_STATUS: diffFilter,
-          INPUT_FILENAME_PATTERN: filenamePatterns,
-          GITHUB_REF: headRef,
-        } = process.env
+        const util = require('util')
 
-        filenamePatterns = filenamePatterns
-          .split('\n')
-          .map(pattern => pattern.trim())
+        const ref = core.getInput('ref')
+        const baseRef = core.getInput('base-ref')
+        const headRef = core.getInput('head-ref')
+        const diffFilter = core.getInput('status')
+        const filenamePatterns = core.getMultilineInput('filename-pattern')
 
         // Attempt fetch and branch creation for each ref
         await Promise.allSettled(
