@@ -29235,10 +29235,11 @@ async function run () {
   core.group('Input', () => {
     core.info(headRef)
     core.info(baseRef)
-    core.info(filenamePatterns)
-    core.info(includeStatuses)
-    core.info(excludeStatuses)
-    core.info(compare.files)
+    core.info(util.inspect(statuses))
+    core.info(util.inspect(filenamePatterns))
+    core.info(util.inspect(includeStatuses))
+    core.info(util.inspect(excludeStatuses))
+    core.info(util.inspect(compare.files))
   })
 
   core.setOutput('changed-filenames', changedFilenames)
