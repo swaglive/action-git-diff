@@ -18,7 +18,7 @@ jobs:
       uses: swaglive/action-git-diff@4bcfdb37628e09aa3a3ceac2d394058cfa83f2d4
       with:
         head-ref: ${{ github.event.pull_request.head.sha || 'HEAD' }}
-        base-ref: ${{ github.event.pull_request.base.sha || 'HEAD~2' }}
+        base-ref: ${{ github.event.pull_request.base.sha || 'HEAD~1' }}
         filename-pattern: |-
           src/*.js
           src/*.jsx
