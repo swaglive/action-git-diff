@@ -29228,7 +29228,9 @@ async function run () {
     .filter(({ status }) => excludeStatuses.length === 0 || !excludeStatuses.includes(status))
 
   core.setOutput('changed-filenames', files.map(({ filename }) => filename))
-  core.setOutput('json', util.inspect(compare))
+  core.setOutput('json', compare)
+
+  core.group('Output', () => core.info(util.inspect(compare)))
 }
 
 module.exports = {
