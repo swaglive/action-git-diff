@@ -29231,17 +29231,6 @@ async function run () {
     .filter(({ status }) => excludeStatuses.length === 0 || !excludeStatuses.includes(status))
     .map(({ filename }) => filename)
 
-  
-  core.group('Input', () => {
-    core.info(headRef)
-    core.info(baseRef)
-    core.info(util.inspect(statuses))
-    core.info(util.inspect(filenamePatterns))
-    core.info(util.inspect(includeStatuses))
-    core.info(util.inspect(excludeStatuses))
-    core.info(util.inspect(compare.files))
-  })
-
   core.setOutput('changed-filenames', changedFilenames)
   core.setOutput('json', compare)
 

@@ -21,3 +21,5 @@ jobs:
       with:
         head-ref: ${{ github.event.pull_request.head.sha || github.event.after || 'HEAD' }}
         base-ref: ${{ github.event.pull_request.base.sha || github.event.before || 'HEAD~1' }}
+        filename-pattern: |-
+          **/*.js
