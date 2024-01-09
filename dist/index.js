@@ -29211,7 +29211,7 @@ async function run () {
   } = process.env
   const headRef = core.getInput('head-ref', { required: true }).replace('HEAD', refName)
   const baseRef = core.getInput('base-ref', { required: true }).replace('HEAD', refName)
-  const filenamePatterns = core.getMultilineInput('filename-patterns')
+  const filenamePatterns = core.getMultilineInput('filename-pattern')
   const statuses = core.getInput('status')
     .split('')
   const includeStatuses = statuses
@@ -29225,9 +29225,6 @@ async function run () {
     ...github.context.repo,
     basehead: `${baseRef}...${headRef}`,
   })
-
-  core.info(compare.files)
-  core.info(filenamePatterns)
 
   const changedFilenames = compare.files
     .filter(({ filename }) => filenamePatterns.length === 0 || filenamePatterns.some(pattern => minimatch(filename, pattern)))
