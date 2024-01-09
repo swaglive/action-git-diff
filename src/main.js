@@ -3,7 +3,6 @@ const core = require('@actions/core')
 const github = require('@actions/github')
 const { minimatch } = require('minimatch')
 
-// https://git-scm.com/docs/git-status#_output
 const STATUS = {
   A: 'added',
   D: 'removed',
