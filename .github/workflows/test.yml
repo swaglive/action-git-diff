@@ -16,6 +16,8 @@ jobs:
     - name: Generate Changed Filenames
       id: git-diff
       uses: swaglive/action-git-diff@main
+      env:
+        OBJ: ${{ toJSON(github.event) }}
       with:
         head-ref: ${{ github.event.pull_request.head.sha || 'HEAD' }}
         base-ref: ${{ github.event.pull_request.base.sha || 'HEAD~1' }}
