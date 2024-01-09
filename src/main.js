@@ -41,10 +41,10 @@ async function run () {
     .filter(({ status }) => excludeStatuses.length === 0 || !excludeStatuses.includes(status))
     .map(({ filename }) => filename)
 
-  core.setOutput('changed-filenames', changedFilenames)
+  core.setOutput('filenames', changedFilenames)
   core.setOutput('json', compare)
 
-  core.group('Output - changed-filenames', () => core.info(util.inspect(changedFilenames)))
+  core.group('Output - filenames', () => core.info(util.inspect(changedFilenames)))
   core.group('Output - json', () => core.info(util.inspect(compare)))
 }
 
