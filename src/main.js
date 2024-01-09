@@ -34,6 +34,10 @@ async function run () {
     ...github.context.repo,
     basehead: `${baseRef}...${headRef}`,
   })
+
+  core.info(compare.files)
+  core.info(filenamePatterns)
+
   const changedFilenames = compare.files
     .filter(({ filename }) => filenamePatterns.length === 0 || filenamePatterns.some(pattern => minimatch(filename, pattern)))
     .filter(({ status }) => includeStatuses.length === 0 || includeStatuses.includes(status))
