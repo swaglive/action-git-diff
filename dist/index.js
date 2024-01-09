@@ -29206,7 +29206,7 @@ const STATUS = {
 
 async function run () {
   core.group('Input', () => core.info(util.inspect(process.env)))
-  core.group('github', () => core.info(util.inspect(github)))
+  core.group('github', () => core.info(util.inspect(github.context.payload)))
 
   const octokit = github.getOctokit(core.getInput('token'))
   const headRef = core.getInput('head-ref', { required: true }).replace('HEAD', github.ref_name)
