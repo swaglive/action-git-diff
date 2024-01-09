@@ -1,7 +1,7 @@
 name: git diff
 description: Generates file change log between 2 git refs
 inputs:
-  ref: 
+  head-ref:
     description: git ref to use as head
     required: false
     default: HEAD
@@ -10,61 +10,21 @@ inputs:
     required: false
     default: HEAD~1
   status:
-    description: Change status of the files to filter by. See https://git-scm.com/docs/git-status#_output
+    description: Change status of the files to filter by. See https://git-scm.com/docs/git-diff#Documentation/git-diff.txt---diff-filterACDMRTUXB82308203
     required: false
     default: d
-  filename-pattern:
+  filename-patterns:
     description: Filename pattern to filter by
     required: false
-    default: '*'
+    default: '**/*'
+  token:
+    description: GitHub token to use for authentication
+    required: false
+    default: ${{ github.token }}
 outputs:
   filenames:
     description: A JSON array of filenames that changed
-    value: ${{ toJSON(fromJSON(steps.diff.outputs.result).changedFilenames) }}
+    # value: ${{ toJSON(fromJSON(steps.diff.outputs.result).changedFilenames) }}
 runs:
-  using: composite
-  steps:
-  - uses: actions/github-script@v7
-    id: diff
-    env:
-      INPUT_FILENAME-PATTERN: ${{ inputs.filename-pattern }}
-      INPUT_REF: ${{ inputs.ref }}
-      INPUT_BASE-REF: ${{ inputs.base-ref }}
-      INPUT_HEAD-REF: ${{ github.head_ref }}
-      INPUT_STATUS: ${{ inputs.status }}
-    with:
-      script: |-
-        const util = require('util')
-
-        const ref = core.getInput('ref')
-        const baseRef = core.getInput('base-ref')
-        const headRef = core.getInput('head-ref')
-        const diffFilter = core.getInput('status')
-        const filenamePatterns = core.getMultilineInput('filename-pattern')
-
-        // Attempt fetch and branch creation for each ref
-        await Promise.allSettled(
-          [ ref, baseRef, headRef ]
-            .map(ref => ref.split(/[~|\^|@]/)[0])
-            .filter(Boolean)
-            .map(async ref => {
-              await exec.getExecOutput('git', ['fetch', 'origin', ref])
-              await exec.getExecOutput('git', ['branch', ref, `remotes/origin/${ref}`])
-            })
-        )
-
-        let { stdout: changedFilenames } = await exec.getExecOutput(
-          'git', 
-          [
-            'diff', 
-            '--name-only',
-            '--diff-filter', diffFilter, 
-            `${baseRef}...${ref}`, 
-            '--', 
-            ...filenamePatterns,
-          ]
-        )
-
-        return { 
-          changedFilenames: changedFilenames.split('\n').filter(Boolean),
-        }
+  using: node20
+  main: dist/index.js
