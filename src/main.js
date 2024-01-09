@@ -17,8 +17,8 @@ async function run () {
   core.group('Input', () => core.info(util.inspect(process.env)))
 
   const octokit = github.getOctokit(core.getInput('token'))
-  const headRef = core.getInput('head-ref', { required: true }).replace('HEAD', github.context.ref_name)
-  const baseRef = core.getInput('base-ref', { required: true }).replace('HEAD', github.context.ref_name)
+  const headRef = core.getInput('head-ref', { required: true }).replace('HEAD', github.ref_name)
+  const baseRef = core.getInput('base-ref', { required: true }).replace('HEAD', github.ref_name)
   const filenamePatterns = core.getMultilineInput('filename-patterns')
   const statuses = core.getInput('status')
     .split('')
