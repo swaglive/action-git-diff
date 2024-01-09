@@ -14,11 +14,12 @@ const STATUS = {
 }
 
 async function run () {
-  core.group('github', () => core.info(util.inspect(github.context.payload, { depth: null })))
-
   const octokit = github.getOctokit(core.getInput('token'))
-  const headRef = core.getInput('head-ref', { required: true }).replace('HEAD', github.ref_name)
-  const baseRef = core.getInput('base-ref', { required: true }).replace('HEAD', github.ref_name)
+  const {
+    GITHUB_REF_NAME: refName
+  } = process.env
+  const headRef = core.getInput('head-ref', { required: true }).replace('HEAD', refName)
+  const baseRef = core.getInput('base-ref', { required: true }).replace('HEAD', refName)
   const filenamePatterns = core.getMultilineInput('filename-patterns')
   const statuses = core.getInput('status')
     .split('')
