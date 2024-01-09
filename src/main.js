@@ -35,7 +35,7 @@ async function run () {
     basehead: `${baseRef}...${headRef}`,
   })
   const changedFilenames = compare.files
-    .filter(({ filename }) => filenamePatterns.some(pattern => minimatch(filename, pattern)))
+    .filter(({ filename }) => filenamePatterns.length === 0 || filenamePatterns.some(pattern => minimatch(filename, pattern)))
     .filter(({ status }) => includeStatuses.length === 0 || includeStatuses.includes(status))
     .filter(({ status }) => excludeStatuses.length === 0 || !excludeStatuses.includes(status))
     .map(({ filename }) => filename)
