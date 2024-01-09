@@ -24,7 +24,6 @@ inputs:
 outputs:
   filenames:
     description: A JSON array of filenames that changed
-    # value: ${{ toJSON(fromJSON(steps.diff.outputs.result).changedFilenames) }}
 runs:
   using: node20
   main: dist/index.js
