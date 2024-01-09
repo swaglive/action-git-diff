@@ -29205,8 +29205,7 @@ const STATUS = {
 }
 
 async function run () {
-  core.group('Input', () => core.info(util.inspect(process.env)))
-  core.group('github', () => core.info(util.inspect(github.context.payload)))
+  core.group('github', () => core.info(util.inspect(github.context.payload, { depth: null })))
 
   const octokit = github.getOctokit(core.getInput('token'))
   const headRef = core.getInput('head-ref', { required: true }).replace('HEAD', github.ref_name)
@@ -29220,14 +29219,6 @@ async function run () {
   const excludeStatuses = statuses
     .filter(status => status === status.toLowerCase())
     .map(status => STATUS[status.toUpperCase()])
-
-  core.group('Input', () => {
-    core.info(headRef)
-    core.info(baseRef)
-    core.info(filenamePatterns)
-    core.info(includeStatuses)
-    core.info(excludeStatuses)
-  })
 
   const { data: compare } = await octokit.request('GET /repos/{owner}/{repo}/compare/{basehead}', {
     ...github.context.repo,
