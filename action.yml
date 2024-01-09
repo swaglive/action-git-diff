@@ -13,7 +13,7 @@ inputs:
     description: Change status of the files to filter by. See https://git-scm.com/docs/git-diff#Documentation/git-diff.txt---diff-filterACDMRTUXB82308203
     required: false
     default: d
-  filename-patterns:
+  filename-pattern:
     description: Filename pattern to filter by
     required: false
     default: '**/*'
