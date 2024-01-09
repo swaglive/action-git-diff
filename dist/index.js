@@ -29194,7 +29194,6 @@ const core = __nccwpck_require__(2559)
 const github = __nccwpck_require__(1089)
 const { minimatch } = __nccwpck_require__(4319)
 
-// https://git-scm.com/docs/git-status#_output
 const STATUS = {
   A: 'added',
   D: 'removed',
@@ -29210,21 +29209,23 @@ async function run () {
   const headRef = core.getInput('head-ref', { required: true }).replace('HEAD', github.context.ref_name)
   const baseRef = core.getInput('base-ref', { required: true }).replace('HEAD', github.context.ref_name)
   const filenamePatterns = core.getMultilineInput('filename-patterns')
-  const requiredStatuses = core.getInput('status')
-    .replace('*', 'ADMRCTU')
+  const statuses = core.getInput('status')
     .split('')
-    .map(status => STATUS[status] || core.setFailed(`Invalid status: ${status}`))
-
-  // github.event.payload.pull_request.head.label/sha
-  // github.event.payload.pull_request.base.label/sha
+  const includeStatuses = statuses
+    .filter(status => status === status.toUpperCase())
+    .map(status => STATUS[status.toUpperCase()])
+  const excludeStatuses = statuses
+    .filter(status => status === status.toLowerCase())
+    .map(status => STATUS[status.toUpperCase()])
 
   const { data: compare } = await octokit.request('GET /repos/{owner}/{repo}/compare/{basehead}', {
     ...github.context.repo,
     basehead: `${baseRef}...${headRef}`,
   })
   const files = compare.files
-    .filter(({ status }) => requiredStatuses.includes(status))
     .filter(({ filename }) => filenamePatterns.some(pattern => minimatch(filename, pattern)))
+    .filter(({ status }) => includeStatuses.length === 0 || includeStatuses.includes(status))
+    .filter(({ status }) => excludeStatuses.length === 0 || !excludeStatuses.includes(status))
 
   core.setOutput('changed-filenames', files.map(({ filename }) => filename))
   core.setOutput('json', util.inspect(compare))
