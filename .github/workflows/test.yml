@@ -21,6 +21,3 @@ jobs:
       with:
         head-ref: ${{ github.event.pull_request.head.sha || 'HEAD' }}
         base-ref: ${{ github.event.pull_request.base.sha || 'HEAD~1' }}
-        filename-pattern: |-
-          src/*.js
-          src/*.jsx
