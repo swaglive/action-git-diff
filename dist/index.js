@@ -29225,15 +29225,17 @@ async function run () {
     ...github.context.repo,
     basehead: `${baseRef}...${headRef}`,
   })
-  const files = compare.files
+  const changedFilenames = compare.files
     .filter(({ filename }) => filenamePatterns.some(pattern => minimatch(filename, pattern)))
     .filter(({ status }) => includeStatuses.length === 0 || includeStatuses.includes(status))
     .filter(({ status }) => excludeStatuses.length === 0 || !excludeStatuses.includes(status))
+    .map(({ filename }) => filename)
 
-  core.setOutput('changed-filenames', files.map(({ filename }) => filename))
+  core.setOutput('changed-filenames', changedFilenames)
   core.setOutput('json', compare)
 
-  core.group('Output', () => core.info(util.inspect(compare)))
+  core.group('Output - changed-filenames', () => core.info(util.inspect(changedFilenames)))
+  core.group('Output - json', () => core.info(util.inspect(compare)))
 }
 
 module.exports = {
