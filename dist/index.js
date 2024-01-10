@@ -29206,11 +29206,9 @@ const STATUS = {
 
 async function run () {
   const octokit = github.getOctokit(core.getInput('token'))
-  const {
-    GITHUB_REF_NAME: refName
-  } = process.env
-  const headRef = core.getInput('head-ref', { required: true }).replace('HEAD', refName)
-  const baseRef = core.getInput('base-ref', { required: true }).replace('HEAD', refName)
+  const defaultBranch = core.getInput('default-branch')
+  const headRef = core.getInput('head-ref', { required: true }).replace('HEAD', defaultBranch)
+  const baseRef = core.getInput('base-ref', { required: true }).replace('HEAD', defaultBranch)
   const filenamePatterns = core.getMultilineInput('filename-pattern')
   const statuses = core.getInput('status')
     .split('')

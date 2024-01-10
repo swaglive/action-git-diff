@@ -12,6 +12,10 @@ inputs:
     description: git ref to use as base
     required: false
     default: HEAD~1
+  default-branch:
+    description: git branch to use as reference for `HEAD`
+    required: false
+    default: ${{ github.ref_name }}
   status:
     description: Change status of the files to filter by. See https://git-scm.com/docs/git-diff#Documentation/git-diff.txt---diff-filterACDMRTUXB82308203
     required: false
