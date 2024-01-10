@@ -1,5 +1,8 @@
 name: git diff
 description: Generates file change log between 2 git refs
+branding:
+  icon: git-branch
+  color: gray-dark
 inputs:
   head-ref:
     description: git ref to use as head
