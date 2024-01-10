@@ -11,7 +11,7 @@
 | `default-branch` | no | `${{ github.ref_name }}` | Branch to use when `HEAD` is referenced |
 | `status` | no | `d` | Change status of the files to filter by. See https://git-scm.com/docs/git-diff#Documentation/git-diff.txt---diff-filterACDMRTUXB82308203  |
 | `filename-pattern` | no | `**/*` | Filename globs to filter by |
-| `token` | no | `.` | Github token to use |
+| `token` | no | `${{ github.token }}` | Github token to use |
 
 ## Outputs 📤
 
