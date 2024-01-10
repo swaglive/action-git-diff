@@ -1,5 +1,5 @@
 name: Generate git diff
-description: Performs a Git diff between the current branch and a target branch or commit, and saves the diff output as an artifact in the workflow.
+description: Performs a git comparison between 2 refs
 branding:
   icon: git-branch
   color: gray-dark
