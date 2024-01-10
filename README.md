@@ -1,5 +1,9 @@
 # action-git-diff
 
+Perform a git compare between 2 refs
+
+* Does not require [actions/checkout](https://github.com/actions/checkout)
+
 ## Usage
 
 ## Inputs 📥
