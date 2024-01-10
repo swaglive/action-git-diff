@@ -1,4 +1,4 @@
-name: git diff
+name: Generate git diff
 description: Generates file change log between 2 git refs
 branding:
   icon: git-branch
